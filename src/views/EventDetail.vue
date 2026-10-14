@@ -1,12 +1,18 @@
+<script setup>
+import AppButton from "@/components/ui/AppButton.vue";
+import AppCard from "@/components/ui/AppCard.vue";
+</script>
+
 <template>
   <div class="event-detail-page">
-    <button @click="$router.push('/browse/events')" class="btn-back">
+    <button class="btn-back" @click="$router.push('/browse/events')">
       &larr; Back to Events
     </button>
 
     <div class="detail-header">
-      <span class="event-tag">Workshop & Training</span>
+      <span class="event-tag">Workshop &amp; Training</span>
       <h1>Vue.js Mastery Workshop {{ $route.params.id }}</h1>
+
       <div class="meta-info">
         <span class="meta-item">🗓️ October 12, 2026</span>
         <span class="meta-item">📍 Tech Hub, Jakarta Pusat</span>
@@ -14,55 +20,45 @@
       </div>
     </div>
 
-    <!-- ASYMMETRICAL LAYOUT -->
     <div class="detail-content grid-asymmetric">
-      <!-- F-PATTERN: Breaking text with Headings & Bullet Points -->
       <div class="main-desc">
         <h2>About This Event</h2>
         <p>
-          Welcome to the biggest web interface development training event of the
-          year! Gatherly is collaborating with the local developer community to
-          host a comprehensive workshop designed specifically to bring together
-          professionals, enthusiasts, and students.
+          Are you ready to take your Vue.js skills to the next level? Join this
+          intensive workshop where we will dive deep into the Vue 3 Composition
+          API, state management with Pinia, and best practices for building
+          scalable web applications.
         </p>
         <p>
-          In this session, we will discuss various current industry challenges,
-          dissect the implementation of Single Page Applications (SPA), and
-          practice hands-on Layout System design prioritizing visual hierarchy.
-          You will gain practical insights that can be directly applied to your
-          future projects and career.
+          This event is designed for intermediate developers who already have a
+          basic understanding of JavaScript and Vue.js. Bring your laptop, as
+          this will be a hands-on coding session!
         </p>
 
-        <h2>Event Agenda</h2>
+        <h2>Agenda</h2>
         <ul class="agenda-list">
+          <li><strong>09:00</strong> - Registration &amp; QR Check-in</li>
+          <li><strong>10:00</strong> - Session 1: Composition API Deep Dive</li>
+          <li><strong>11:30</strong> - Coffee Break &amp; Networking</li>
           <li>
-            <strong>09:00 AM</strong> - Registration & QR Check-in Scanning
+            <strong>01:00</strong> - Session 2: State Management with Pinia
           </li>
-          <li>
-            <strong>10:00 AM</strong> - Session 1: Vue Router & Navigation
-            Fundamentals
-          </li>
-          <li><strong>11:30 AM</strong> - Coffee Break & Networking Session</li>
-          <li>
-            <strong>01:00 PM</strong> - Session 2: Layout System & Grid
-            Implementation
-          </li>
-          <li><strong>03:00 PM</strong> - Q&A & Closing Remarks</li>
+          <li><strong>03:00</strong> - Q&amp;A and Closing Remarks</li>
         </ul>
       </div>
 
-      <!-- FOCAL POINT & STICKY PANE -->
       <div class="sidebar">
-        <div class="ticket-card sticky-pane">
+        <AppCard class="ticket-card sticky-pane">
           <h3>Attendee Registration</h3>
           <p class="price">Free</p>
           <p class="ticket-desc">
             Secure your seat now before the quota is full.
           </p>
-          <!-- STRONG FOCAL POINT -->
-          <button class="btn-register">Register Now</button>
+          <AppButton class="btn-register" variant="primary"
+            >Register Now</AppButton
+          >
           <p class="spots">Only 12 seats left!</p>
-        </div>
+        </AppCard>
       </div>
     </div>
   </div>
@@ -72,16 +68,16 @@
 .btn-back {
   background: none;
   border: none;
-  font-size: 1rem;
-  cursor: pointer;
-  margin-bottom: var(--space-6);
   color: var(--text-muted);
+  cursor: pointer;
+  font-size: 1rem;
+  margin-bottom: var(--space-6);
 }
 
 .detail-header {
   background: var(--bg-light);
-  border-radius: var(--space-4);
   border: 1px solid var(--border-color);
+  border-radius: var(--space-4);
   padding: var(--space-12) var(--space-8);
   margin-bottom: var(--space-8);
 }
@@ -90,18 +86,18 @@
   display: inline-block;
   background: rgba(102, 68, 255, 0.1);
   color: var(--primary);
-  padding: var(--space-1) var(--space-3);
   border-radius: 50px;
-  font-weight: 600;
+  padding: var(--space-1) var(--space-3);
   font-size: 0.9rem;
+  font-weight: 600;
   margin-bottom: var(--space-4);
 }
 
 .detail-header h1 {
-  font-size: 2.8rem;
-  margin-bottom: var(--space-4);
   color: var(--text-main);
+  font-size: 2.8rem;
   line-height: 1.2;
+  margin-bottom: var(--space-4);
 }
 
 .meta-info {
@@ -111,11 +107,10 @@
 
 .meta-item {
   color: var(--text-muted);
-  font-weight: 500;
   font-size: 1.05rem;
+  font-weight: 500;
 }
 
-/* ASYMMETRICAL GRID */
 .grid-asymmetric {
   display: grid;
   grid-template-columns: 2fr 1fr;
@@ -123,43 +118,37 @@
 }
 
 .main-desc h2 {
-  margin-bottom: var(--space-4);
-  font-size: 1.8rem;
   border-left: 4px solid var(--primary);
+  font-size: 1.8rem;
+  margin-bottom: var(--space-4);
   padding-left: var(--space-2);
 }
 
 .main-desc p {
   color: var(--text-muted);
+  font-size: 1.05rem;
   line-height: 1.8;
   margin-bottom: var(--space-6);
-  font-size: 1.05rem;
 }
 
 .agenda-list {
   list-style: none;
   padding: 0;
-  margin: 0 0 var(--space-8) 0;
+  margin: 0 0 var(--space-8);
 }
 
 .agenda-list li {
-  padding: var(--space-3) 0;
   border-bottom: 1px solid var(--border-color);
   color: var(--text-muted);
   font-size: 1.05rem;
+  padding: var(--space-3) 0;
 }
 
-/* FOCAL POINT CARD */
 .ticket-card {
-  background: white;
   padding: var(--space-8);
-  border-radius: var(--space-4);
-  border: 1px solid var(--border-color);
-  box-shadow: 0 8px 20px rgba(0, 0, 0, 0.06);
   text-align: center;
 }
 
-/* STICKY BEHAVIOR */
 .sticky-pane {
   position: sticky;
   top: 100px;
@@ -171,9 +160,9 @@
 }
 
 .price {
+  color: var(--primary);
   font-size: 2.8rem;
   font-weight: 800;
-  color: var(--primary);
   margin-bottom: var(--space-2);
 }
 
@@ -184,25 +173,13 @@
 
 .btn-register {
   width: 100%;
-  padding: var(--space-4);
-  background: var(--primary);
-  color: white;
-  border: none;
-  border-radius: 12px;
-  font-size: 1.1rem;
-  font-weight: 600;
-  cursor: pointer;
-}
-
-.btn-register:hover {
-  background: var(--primary-hover);
 }
 
 .spots {
-  margin-top: var(--space-4);
   color: #e63946;
-  font-weight: 600;
   font-size: 0.95rem;
+  font-weight: 600;
+  margin-top: var(--space-4);
 }
 
 @media (max-width: 900px) {
