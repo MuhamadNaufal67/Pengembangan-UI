@@ -1,96 +1,157 @@
 <script setup>
+import { computed } from "vue";
+import { useRoute, useRouter } from "vue-router";
+import { useEvents } from "@/composables/useEvents";
 import AppButton from "@/components/ui/AppButton.vue";
 import AppCard from "@/components/ui/AppCard.vue";
+
+const route = useRoute();
+const router = useRouter();
+const { getEventById } = useEvents();
+
+const event = computed(() => getEventById(route.params.id));
 </script>
 
 <template>
   <div class="event-detail-page">
-    <button class="btn-back" @click="$router.push('/browse/events')">
+    <button class="btn-back" @click="router.push('/browse/events')">
       &larr; Back to Events
     </button>
 
-    <div class="detail-header">
-      <span class="event-tag">Workshop &amp; Training</span>
-      <h1>Vue.js Mastery Workshop {{ $route.params.id }}</h1>
+    <div v-if="event">
+      <div class="detail-header">
+        <div class="header-tags">
+          <span class="event-tag">{{ event.cat }}</span>
+          <span v-if="event.done" class="status-tag status-ended"
+            >Event Finished</span
+          >
+          <span v-else class="status-tag status-live">Open Registration</span>
+        </div>
 
-      <div class="meta-info">
-        <span class="meta-item">🗓️ October 12, 2026</span>
-        <span class="meta-item">📍 Tech Hub, Jakarta Pusat</span>
-        <span class="meta-item">👥 Quota: 150 Attendees</span>
+        <h1>{{ event.title }}</h1>
+
+        <div class="meta-info">
+          <span class="meta-item">🗓️ {{ event.date }}</span>
+          <span class="meta-item">{{ event.loc }}</span>
+          <span class="meta-item">👥 Quota: {{ event.quota }} Attendees</span>
+        </div>
+      </div>
+
+      <div class="detail-content grid-asymmetric">
+        <div class="main-desc">
+          <h2>About This Event</h2>
+          <p class="description-text">{{ event.desc }}</p>
+        </div>
+
+        <div class="sidebar">
+          <AppCard class="ticket-card sticky-pane">
+            <h3>Attendee Registration</h3>
+            <p class="price">{{ event.price }}</p>
+            <p class="ticket-desc">
+              {{
+                event.done
+                  ? "Registration is closed as this event has ended."
+                  : "Secure your ticket now before quota is filled."
+              }}
+            </p>
+
+            <AppButton
+              v-if="!event.done"
+              variant="primary"
+              class="btn-register"
+              @click="
+                alert(
+                  'Ticket registered successfully! Your digital QR ticket has been sent to your email.',
+                )
+              "
+            >
+              Register Now
+            </AppButton>
+            <AppButton
+              v-else
+              variant="secondary"
+              class="btn-register btn-disabled"
+              disabled
+            >
+              Registration Closed
+            </AppButton>
+            <p v-if="!event.done" class="spots">
+              Only {{ event.quota }} seats available!
+            </p>
+          </AppCard>
+        </div>
       </div>
     </div>
 
-    <div class="detail-content grid-asymmetric">
-      <div class="main-desc">
-        <h2>About This Event</h2>
-        <p>
-          Are you ready to take your Vue.js skills to the next level? Join this
-          intensive workshop where we will dive deep into the Vue 3 Composition
-          API, state management with Pinia, and best practices for building
-          scalable web applications.
-        </p>
-        <p>
-          This event is designed for intermediate developers who already have a
-          basic understanding of JavaScript and Vue.js. Bring your laptop, as
-          this will be a hands-on coding session!
-        </p>
-
-        <h2>Agenda</h2>
-        <ul class="agenda-list">
-          <li><strong>09:00</strong> - Registration &amp; QR Check-in</li>
-          <li><strong>10:00</strong> - Session 1: Composition API Deep Dive</li>
-          <li><strong>11:30</strong> - Coffee Break &amp; Networking</li>
-          <li>
-            <strong>01:00</strong> - Session 2: State Management with Pinia
-          </li>
-          <li><strong>03:00</strong> - Q&amp;A and Closing Remarks</li>
-        </ul>
-      </div>
-
-      <div class="sidebar">
-        <AppCard class="ticket-card sticky-pane">
-          <h3>Attendee Registration</h3>
-          <p class="price">Free</p>
-          <p class="ticket-desc">
-            Secure your seat now before the quota is full.
-          </p>
-          <AppButton class="btn-register" variant="primary"
-            >Register Now</AppButton
-          >
-          <p class="spots">Only 12 seats left!</p>
-        </AppCard>
-      </div>
+    <div v-else class="not-found-card">
+      <h2>404 - Event Not Found</h2>
+      <p>
+        The event you are looking for is unavailable or has been removed by the
+        organizer.
+      </p>
+      <AppButton variant="primary" @click="router.push('/browse/events')">
+        Back to Event Catalog
+      </AppButton>
     </div>
   </div>
 </template>
 
 <style scoped>
 .btn-back {
+  padding: 0;
+  color: var(--text-muted);
+  font-size: 1rem;
+  font-weight: 500;
+  cursor: pointer;
   background: none;
   border: none;
-  color: var(--text-muted);
-  cursor: pointer;
-  font-size: 1rem;
   margin-bottom: var(--space-6);
 }
 
+.btn-back:hover {
+  color: var(--primary);
+}
+
 .detail-header {
+  padding: var(--space-12) var(--space-8);
+  margin-bottom: var(--space-8);
   background: var(--bg-light);
   border: 1px solid var(--border-color);
   border-radius: var(--space-4);
-  padding: var(--space-12) var(--space-8);
-  margin-bottom: var(--space-8);
+}
+
+.header-tags {
+  display: flex;
+  gap: var(--space-3);
+  align-items: center;
+  margin-bottom: var(--space-4);
 }
 
 .event-tag {
-  display: inline-block;
-  background: rgba(102, 68, 255, 0.1);
+  padding: var(--space-1) var(--space-4);
   color: var(--primary);
-  border-radius: 50px;
-  padding: var(--space-1) var(--space-3);
   font-size: 0.9rem;
   font-weight: 600;
-  margin-bottom: var(--space-4);
+  text-transform: uppercase;
+  background: rgba(102, 68, 255, 0.1);
+  border-radius: 50px;
+}
+
+.status-tag {
+  padding: var(--space-1) var(--space-3);
+  font-size: 0.8rem;
+  font-weight: 600;
+  border-radius: 50px;
+}
+
+.status-live {
+  color: #27ae60;
+  background: rgba(46, 204, 113, 0.15);
+}
+
+.status-ended {
+  color: #6c757d;
+  background: rgba(108, 117, 125, 0.15);
 }
 
 .detail-header h1 {
@@ -102,6 +163,7 @@ import AppCard from "@/components/ui/AppCard.vue";
 
 .meta-info {
   display: flex;
+  flex-wrap: wrap;
   gap: var(--space-6);
 }
 
@@ -118,30 +180,17 @@ import AppCard from "@/components/ui/AppCard.vue";
 }
 
 .main-desc h2 {
-  border-left: 4px solid var(--primary);
+  padding-left: var(--space-2);
   font-size: 1.8rem;
   margin-bottom: var(--space-4);
-  padding-left: var(--space-2);
+  border-left: 4px solid var(--primary);
 }
 
-.main-desc p {
+.description-text {
   color: var(--text-muted);
-  font-size: 1.05rem;
+  font-size: 1.1rem;
   line-height: 1.8;
   margin-bottom: var(--space-6);
-}
-
-.agenda-list {
-  list-style: none;
-  padding: 0;
-  margin: 0 0 var(--space-8);
-}
-
-.agenda-list li {
-  border-bottom: 1px solid var(--border-color);
-  color: var(--text-muted);
-  font-size: 1.05rem;
-  padding: var(--space-3) 0;
 }
 
 .ticket-card {
@@ -168,6 +217,7 @@ import AppCard from "@/components/ui/AppCard.vue";
 
 .ticket-desc {
   color: var(--text-muted);
+  line-height: 1.5;
   margin-bottom: var(--space-6);
 }
 
@@ -175,11 +225,33 @@ import AppCard from "@/components/ui/AppCard.vue";
   width: 100%;
 }
 
+.btn-disabled {
+  cursor: not-allowed;
+  opacity: 0.6;
+}
+
 .spots {
-  color: #e63946;
+  color: #27ae60;
   font-size: 0.95rem;
   font-weight: 600;
   margin-top: var(--space-4);
+}
+
+.not-found-card {
+  padding: var(--space-12);
+  text-align: center;
+  background: white;
+  border: 1px solid var(--border-color);
+  border-radius: var(--space-4);
+}
+
+.not-found-card h2 {
+  margin-bottom: var(--space-2);
+}
+
+.not-found-card p {
+  color: var(--text-muted);
+  margin-bottom: var(--space-6);
 }
 
 @media (max-width: 900px) {
