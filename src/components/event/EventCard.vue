@@ -3,6 +3,7 @@
     <div class="event-body">
       <div class="event-meta">
         <span class="event-date">{{ event.date }}</span>
+        <span v-if="isRegistered" class="badge-registered">Registered</span>
         <span class="event-category">{{ event.cat }}</span>
       </div>
 
@@ -27,6 +28,7 @@ defineProps({
     type: Object,
     required: true,
   },
+  isRegistered: { type: Boolean, default: false },
 });
 
 defineEmits(["view-detail"]);
@@ -60,6 +62,15 @@ defineEmits(["view-detail"]);
   border-radius: 6px;
   font-weight: 600;
   font-size: 0.85rem;
+}
+
+.badge-registered {
+  padding: var(--space-1) var(--space-2);
+  color: var(--primary);
+  font-size: 0.8rem;
+  font-weight: 700;
+  background: rgba(102, 68, 255, 0.1);
+  border-radius: 6px;
 }
 
 .event-category {

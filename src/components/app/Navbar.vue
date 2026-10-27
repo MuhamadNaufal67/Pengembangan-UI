@@ -21,6 +21,7 @@ const menus = [
     ],
   },
   { name: "Dashboard", path: "/dashboard" },
+  { name: "Your Events", path: "/browse/your-events" },
   { name: "Contact", path: "/contact" },
 ];
 

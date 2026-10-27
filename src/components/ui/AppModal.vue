@@ -40,12 +40,14 @@ defineEmits(["confirm", "close"]);
         </div>
 
         <div class="modal-footer">
-          <button class="btn-cancel" @click="$emit('close')">
-            {{ cancelText }}
-          </button>
-          <button class="btn-confirm" @click="$emit('confirm')">
-            {{ confirmText }}
-          </button>
+          <slot name="footer">
+            <button class="btn-cancel" @click="$emit('close')">
+              {{ cancelText }}
+            </button>
+            <button class="btn-confirm" @click="$emit('confirm')">
+              {{ confirmText }}
+            </button>
+          </slot>
         </div>
       </div>
     </div>
