@@ -1,5 +1,5 @@
 <script setup>
-import { reactive, ref } from "vue";
+import { onMounted, reactive, ref } from "vue";
 import { useRouter } from "vue-router";
 import { useEvents } from "@/composables/useEvents";
 import AppButton from "@/components/ui/AppButton.vue";
@@ -13,7 +13,12 @@ const {
   createEvent,
   completeEvent,
   deleteEvent,
+  fetchEvents,
+  loading,
+  error,
 } = useEvents();
+
+onMounted(fetchEvents);
 
 const currentTab = ref("active");
 
@@ -46,12 +51,12 @@ const handleOpenDeleteModal = (event) => {
   isModalOpen.value = true;
 };
 
-const handleConfirmModal = () => {
+const handleConfirmModal = async () => {
   if (selectedEvent.value) {
     if (modalAction.value === "complete") {
       completeEvent(selectedEvent.value.id);
     } else if (modalAction.value === "delete") {
-      deleteEvent(selectedEvent.value.id);
+      await deleteEvent(selectedEvent.value.id);
     }
 
     isModalOpen.value = false;
@@ -84,7 +89,7 @@ const formatEventDate = (dateTime) => {
   return `${datePart} • ${timePart}`;
 };
 
-const handleSubmitEvent = () => {
+const handleSubmitEvent = async () => {
   if (
     !form.title.trim() ||
     !form.date ||
@@ -97,15 +102,20 @@ const handleSubmitEvent = () => {
     return;
   }
 
-  createEvent({
-    title: form.title,
-    cat: form.cat,
-    date: formatEventDate(form.date),
-    loc: form.loc,
-    quota: form.quota,
-    price: form.price,
-    desc: form.desc,
-  });
+  try {
+    await createEvent({
+      title: form.title,
+      cat: form.cat,
+      date: formatEventDate(form.date),
+      loc: form.loc,
+      quota: form.quota,
+      price: form.price,
+      desc: form.desc,
+    });
+  } catch {
+    errorMessage.value = error.value || "Failed to publish event.";
+    return;
+  }
 
   form.title = "";
   form.date = "";

@@ -1,6 +1,11 @@
 <template>
-  <button :class="['app-button', `btn-${variant}`]" @click="$emit('click')">
-    <slot />
+  <button
+    :type="type"
+    :disabled="disabled || loading"
+    :class="['app-button', `btn-${variant}`]"
+    @click="$emit('click')"
+  >
+    <span v-if="loading" class="btn-spinner"></span><slot />
   </button>
 </template>
 
@@ -10,6 +15,9 @@ defineProps({
     type: String,
     default: "primary",
   },
+  loading: { type: Boolean, default: false },
+  disabled: { type: Boolean, default: false },
+  type: { type: String, default: "button" },
 });
 
 defineEmits(["click"]);
@@ -33,6 +41,28 @@ defineEmits(["click"]);
 
 .app-button:hover {
   transform: translateY(-2px);
+}
+
+.app-button:disabled {
+  cursor: not-allowed;
+  opacity: 0.65;
+  transform: none;
+}
+.btn-spinner {
+  display: inline-block;
+  width: 1em;
+  height: 1em;
+  margin-right: var(--space-2);
+  vertical-align: -2px;
+  border: 2px solid rgba(255, 255, 255, 0.5);
+  border-top-color: currentColor;
+  border-radius: 50%;
+  animation: btn-spin 0.7s linear infinite;
+}
+@keyframes btn-spin {
+  to {
+    transform: rotate(360deg);
+  }
 }
 
 .btn-primary {

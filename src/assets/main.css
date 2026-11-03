@@ -44,3 +44,31 @@ body {
   grid-template-columns: repeat(12, 1fr);
   gap: var(--space-6);
 }
+
+@keyframes shimmer {
+  0% {
+    background-position: -200% 0;
+  }
+  100% {
+    background-position: 200% 0;
+  }
+}
+
+.skeleton-card {
+  min-height: 260px;
+  border-radius: var(--space-4);
+  background: linear-gradient(90deg, #f2f2f2 25%, #e8e8e8 50%, #f2f2f2 75%);
+  background-size: 200% 100%;
+  animation: shimmer 1.4s infinite;
+}
+
+.network-error-card {
+  max-width: 680px;
+  padding: var(--space-8);
+  margin: var(--space-8) auto;
+  text-align: center;
+  color: #b42318;
+  background: #fff4f2;
+  border: 1px solid #fecdca;
+  border-radius: var(--space-4);
+}

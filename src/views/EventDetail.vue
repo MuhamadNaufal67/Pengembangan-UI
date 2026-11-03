@@ -1,16 +1,28 @@
 <script setup>
-import { computed } from "vue";
+import { computed, onMounted, ref } from "vue";
 import { useRoute, useRouter } from "vue-router";
 import { useEvents } from "@/composables/useEvents";
 import AppButton from "@/components/ui/AppButton.vue";
 import AppCard from "@/components/ui/AppCard.vue";
 const route = useRoute();
 const router = useRouter();
-const { getEventById, isUserRegistered, getRegistrationByEventId } =
-  useEvents();
-const event = computed(() => getEventById(route.params.id));
+const {
+  getEventById,
+  fetchEventById,
+  loading,
+  error,
+  isUserRegistered,
+  getRegistrationByEventId,
+} = useEvents();
+const remoteEvent = ref(null);
+const event = computed(
+  () => getEventById(route.params.id) || remoteEvent.value,
+);
 const registered = computed(() => isUserRegistered(route.params.id));
 const registration = computed(() => getRegistrationByEventId(route.params.id));
+onMounted(async () => {
+  remoteEvent.value = await fetchEventById(route.params.id);
+});
 </script>
 <template>
   <div class="detail">
@@ -62,9 +74,12 @@ const registration = computed(() => getRegistrationByEventId(route.params.id));
         >
       </main>
     </template>
+    <AppCard v-else-if="loading" class="notfound"
+      ><h2>Loading event...</h2></AppCard
+    >
     <AppCard v-else class="notfound"
       ><h2>404 - Event Not Found</h2>
-      <p>This event is unavailable or removed.</p>
+      <p>{{ error || "This event is unavailable or removed." }}</p>
       <AppButton @click="router.push('/browse/events')"
         >Back to Catalog</AppButton
       ></AppCard
